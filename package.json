@@ -11,6 +11,8 @@
   "dependencies": {
     "@tanjaae/thaismartcardreader": "^0.2.3",
     "fs-extra": "^8.0.1",
+    "knex": "^0.21.6",
+    "mysql": "^2.18.1",
     "xmlhttprequest": "^1.8.0"
   }
 }
