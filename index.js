@@ -71,9 +71,7 @@ fse.readJson('./config.json')
       const address = await person.getAddress()
       const issuer = await person.getIssuer()
 
-      const photo = await person.getPhoto()
-      const photoBuff = Buffer.from(photo)
-      const imageBase64 = photoBuff.toString('base64')
+
 
       // const fileStream = fs.createWriteStream(`${cid}.jpg`)
       // fileStream.write(photoBuff)
@@ -115,7 +113,7 @@ fse.readJson('./config.json')
       data += `&entitle=${enName.prefix}`;
       data += `&enfname=${enName.firstname}`;
       data += `&enlname=${enName.lastname}`;
-      data += `&photo=${imageBase64}`;
+      // data += `&photo=${imageBase64}`;
       data += `&birthDate=${dob.year}-${dob.month}-${dob.day}`;
       xhr.withCredentials = true;
 
@@ -124,7 +122,16 @@ fse.readJson('./config.json')
       //     console.log(this.responseText);
       //   }
       // });
+
+      xhr.open("POST", `${urlAPI}/kiosk/profile`);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.setRequestHeader("cache-control", "no-cache");
+      xhr.send(data);
+
       if (saveToTable === 'true') {
+        const photo = await person.getPhoto()
+        const photoBuff = Buffer.from(photo)
+        const imageBase64 = photoBuff.toString('base64')
         try {
           let dbPerson = knex('nhso_smartcard').where({ 'PERSON_ID': cid });
           const personData = await dbPerson.first();
@@ -143,7 +150,6 @@ fse.readJson('./config.json')
           };
 
           if (personData) {
-            console.log(personData);
             await dbPerson.update(cardData);
           } else {
             const date = new Date();
@@ -172,10 +178,7 @@ fse.readJson('./config.json')
       }
 
 
-      xhr.open("POST", `${urlAPI}/kiosk/profile`);
-      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      xhr.setRequestHeader("cache-control", "no-cache");
-      xhr.send(data);
+
     })
 
     myReader.on('device-deactivated', () => { console.log('device-deactivated') })
