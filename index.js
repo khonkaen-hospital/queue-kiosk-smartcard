@@ -28,7 +28,8 @@ fse.readJson('./config.json')
     kioskId = json.kioskId;
     urlAPI = json.urlAPI;
     token = json.token;
-    saveToTable = json.saveToTable;
+    savePersonData = json.savePersonData;
+    savePersonPhoto = json.savePersonPhoto;
     console.log(urlAPI);
 
     process.on('unhandledRejection', (reason) => {
@@ -128,11 +129,8 @@ fse.readJson('./config.json')
       xhr.setRequestHeader("cache-control", "no-cache");
       xhr.send(data);
 
-      if (saveToTable === 'true') {
-        const photo = await person.getPhoto()
-        const photoBuff = Buffer.from(photo)
-        const imageBase64 = photoBuff.toString('base64')
-        try {
+      try {
+        if (savePersonData === 'true') {
           let dbPerson = knex('nhso_smartcard').where({ 'PERSON_ID': cid });
           const personData = await dbPerson.first();
           const cardData = {
@@ -159,7 +157,12 @@ fse.readJson('./config.json')
             cardData.CREATED_DATE = `${yyyy}-${mm}-${dd} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
             await knex('nhso_smartcard').insert(cardData);
           }
+        }
 
+        if (savePersonPhoto === 'true') {
+          const photo = await person.getPhoto()
+          const photoBuff = Buffer.from(photo)
+          // const imageBase64 = photoBuff.toString('base64')
           let picture = knex('nhso_smartcard_picture').where({ 'PERSON_ID': cid });
           const pictureData = await picture.first();
           if (pictureData) {
@@ -172,10 +175,11 @@ fse.readJson('./config.json')
               'JPG_PICTURE': photoBuff
             });
           }
-        } catch (error) {
-          console.log(error);
         }
+      } catch (error) {
+        console.log(error);
       }
+
 
 
 

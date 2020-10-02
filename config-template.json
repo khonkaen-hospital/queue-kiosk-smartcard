@@ -1,0 +1,12 @@
+{
+    "kioskId": 1,
+    "urlAPI": "http://127.0.0.1/v1",
+    "token": "",
+    "savePersonData": "true",
+    "savePersonPhoto": "true",
+    "DB_HOST": "127.0.0.1",
+    "DB_PORT": "3306",
+    "DB_NAME": "db",
+    "DB_USER": "user",
+    "DB_PASSWORD": "password"
+}
